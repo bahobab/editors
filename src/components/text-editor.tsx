@@ -1,42 +1,50 @@
-import { useState, useEffect, useRef } from 'react';
-
-import MDEditor from '@uiw/react-md-editor';
-
 import './text-editor.css';
+import { useState, useEffect, useRef } from 'react';
+import MDEditor from '@uiw/react-md-editor';
+import { Cell } from '../state';
+import { useActions } from '../hooks/use-actions';
+interface TextEditorProps {
+  cell: Cell
+}
 
-const TextEditor: React.FC = () => {
+const TextEditor: React.FC<TextEditorProps> = ({cell}) => {
   const ref = useRef<HTMLDivElement | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [value, setValue] = useState('# Header')
+  const [editing, setEditing] = useState(false);
+  // const [value, setValue] = useState(cell.content);
+  const { updateCell } = useActions();
 
   useEffect(() => {
-    const listerner = (e: MouseEvent) => {
-      if (ref.current &&
-        e.target &&
-        ref.current.contains(e.target as Node)) {
+    const listener = (event: MouseEvent) => {
+      if (
+        ref.current &&
+        event.target &&
+        ref.current.contains(event.target as Node)
+      ) {
         return;
-      } 
-      setIsEditing(false)
-    }
+      }
 
-    document.addEventListener('click', listerner, { capture: true });
+      setEditing(false);
+    };
+    document.addEventListener('click', listener, { capture: true });
 
-    return () => document.removeEventListener('click', listerner, { capture: true });
+    return () => {
+      document.removeEventListener('click', listener, { capture: true });
+    };
   }, []);
 
-  if (isEditing) {
+  if (editing) {
     return (
-      <div ref={ref} className="text-editor card">
-        <div className="card-content">
-          <MDEditor value={value} onChange={(v) => setValue(v || '')} />
-        </div>
+      <div className="text-editor" ref={ref}>
+        <MDEditor value={cell.content} onChange={(v) => updateCell(cell.id, v || '')} />
       </div>
     );
   }
 
   return (
-    <div onClick={() => setIsEditing(true)}>
-      <MDEditor.Markdown className="text-editor" source={value} />
+    <div className="text-editor card" onClick={() => setEditing(true)}>
+      <div className="card-content">
+        <MDEditor.Markdown source={cell.content || 'Click to Edit...'} />
+      </div>
     </div>
   );
 };
