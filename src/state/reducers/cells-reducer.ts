@@ -38,7 +38,7 @@ const cellsReducer = produce((state: CellsState=initialState, action: Action) =>
     }
     case ActionTypes.MOVE_CELL: {
       const { direction} = action.payload;
-      const index = state.order.findIndex(id => action.payload.id);
+      const index = state.order.findIndex(id => id === action.payload.id);
 
       const targetIndex = direction === 'up' ? index - 1 : index + 1;
 
@@ -81,9 +81,10 @@ const cellsReducer = produce((state: CellsState=initialState, action: Action) =>
   }
 }, initialState);
 
-const randomId = () => (
-  Math.random().toString(36).substr(2,5)
-);
+const randomId = () => {
+  const rand =Math.random().toString(36).substr(2, 5);
+  return rand;
+};
 
 export default cellsReducer;
 
