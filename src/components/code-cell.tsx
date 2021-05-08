@@ -1,34 +1,43 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import CodeEditor from './code-editor';
 import Preview from './preview';
-import bundle from '../bundler';
 import Resizable from './resizable';
 import { Cell } from '../state'
 import { useActions } from '../hooks/use-actions';
+import { useTypedSelector } from '../hooks/use-typed-selector';
 
-  
+import './code-cell.css';
 
 interface CodeCellProps {
   cell: Cell;
 }
 
 const CodeCell: React.FC<CodeCellProps> = ({ cell}) => {
-  const [code, setCode] = useState('');
-  const [err, setErr] = useState('');
-  const { updateCell } = useActions(); // action creator
+  // const [code, setCode] = useState('');
+  // const [err, setErr] = useState('');
+  const { updateCell, createBundle } = useActions(); // action creator
+  const bundle = useTypedSelector((state) => state.bundles[cell.id]);
+
+  // console.log(bundle);
 
   useEffect(() => {
+    if (!bundle) {
+      createBundle(cell.id, cell.content);
+      return;
+    }
     const timer = setTimeout(async () => {
-      const output = await bundle(cell.content);
-      setCode(output.code);
-      setErr(output.err);
+      createBundle(cell.id, cell.content)
+      // const output = await bundle(cell.content);
+      // setCode(output.code);
+      // setErr(output.err);
     }, 750);
 
     return () => {
       clearTimeout(timer);
     };
-  }, [cell.content]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cell.content, cell.id, createBundle]);
 
   return (
     <Resizable direction="vertical">
@@ -39,7 +48,18 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell}) => {
             onChange={(value) => updateCell(cell.id, value)}
           />
         </Resizable>
-        <Preview code={code} err={err} />
+        <div className="progress-wrapper">
+        {
+          !bundle || bundle.loading
+            ? 
+            <div className="progress-cover">
+              <progress className="progress is-small is-primary">
+                Loading...
+              </progress>
+              </div>
+            : <Preview code={bundle.code} err={bundle.err} />
+        }
+            </div>
       </div>
     </Resizable>
   );
