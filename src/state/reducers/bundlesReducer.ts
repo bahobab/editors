@@ -6,7 +6,7 @@ interface BundleState {
     loading: boolean,
     code: string,
     err: string
-  };
+  } | undefined;
 };
 
 const initialState: BundleState = {};
@@ -33,6 +33,6 @@ const bundlesReducer = produce((state: BundleState = initialState, action: Actio
       
     default: return state;
   }
-});
+}, initialState);
 
 export default bundlesReducer;
