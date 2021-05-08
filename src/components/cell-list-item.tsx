@@ -23,7 +23,7 @@ const CellListItem: React.FC<CellListItemProps> = ({ cell }) => {
   }
   else {
     Child = <>
-      <div>
+      <div className="action-bar-wrapper">
       <ActionBar id={ cell.id}/>
       </div>
       <TextEditor cell={cell} />
