@@ -2,5 +2,7 @@ export enum ActionTypes {
   MOVE_CELL = 'move_cell',
   DELETE_CELL = 'delete_cell',
   UPDATE_CELL = 'update_cell',
-  INSERT_CELL_BEFORE = 'insert_cell_before'
+  INSERT_CELL_AFTER = 'insert_cell_after',
+  BUNDLE_START = 'bundle_start',
+  BUNDLE_COMPLETE = 'bundle_comple'
 };
