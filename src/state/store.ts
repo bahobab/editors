@@ -2,8 +2,9 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk'
 
 import reducers from './reducers';
+import { persistMiddlware } from './middlewares/percist-middleware';
 
-export const store = createStore(reducers, {}, applyMiddleware(thunk));
+export const store = createStore(reducers, {}, applyMiddleware(persistMiddlware,thunk));
 
 
 // store.dispatch({

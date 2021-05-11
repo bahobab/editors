@@ -100,7 +100,7 @@ export const fetCellsErrored = () => {
 
 export const saveCells = () => {
   return async (dispatch: Dispatch<Action>, getSate: () => RootState) => {
-    const { cells: { data, order } } = getSate();
+    const { cells: { data, order }, } = getSate();
 
     const cells = order.map(id => data[id]);
 

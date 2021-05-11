@@ -12,10 +12,14 @@ const CellList: React.FC = () => {
     return order.map((id) => data[id]);
   });
 
-  const { fetcCellsCompleted } = useActions();
+  const { fetcCellsCompleted, saveCells } = useActions();
 
   useEffect(() => {
     fetcCellsCompleted()
+  }, []);
+
+  useEffect(() => {
+    saveCells();
   }, []);
 
   const renderedCells = cells.map(cell => (
